@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package fedsplit_communication;
+
+message Embedding {
+    int64 id = 1;
+    repeated double embedding = 2;
+    repeated int64 shape = 3;
+    bool evaluate = 4;
+}
+
+message Gradients {
+    repeated double grad = 1;
+    repeated int64 shape = 2;
+}
+
+message Models {
+    int64 id = 1;
+    repeated Gradients gradients = 2;
+    int64 data_sample = 3;
+}
+
+message Logits {
+    repeated double logits = 1;
+    repeated int64 shape = 2;
+}
+
+service TrainServer {
+    rpc GetTrainResponse (Embedding) returns (Gradients);
+}
+
+service Aggregate {
+    rpc AggregateModels (Models) returns (Models);
+}
+
+message Empty {}
+
+service ReturnServerModel {
+    rpc GetServerModel (Empty) returns (Models);
+}
+
+service SendModelGlobal {
+    rpc ReceiveGlobalModel (Gradients) returns (Gradients);
+}
