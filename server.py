@@ -88,7 +88,7 @@ class TrainServerServicer(pb2_grpc.TrainServerServicer):
         self.model = model.to(self.device)
 
         # Define função de erro e otimizador do cliente
-        self.criterion = nn.CrossEntropyLoss()
+        self.criterion = nn.CrossEntropyLoss().to(self.device)
         self.optim = torch.optim.Adam(self.model.parameters(), lr=learning_rate)
 
         # Lock para garantir que o servidor só atenda um cliente por vez
