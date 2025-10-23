@@ -132,10 +132,12 @@ def serve(split=False, num_clients=53):
     torch.manual_seed(42)
     model = FedAvgCNN(num_classes=num_clients)
     MAX_LENGTH = 50 * 1024 * 1024
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
                 options=[('grpc.max_send_message_length', MAX_LENGTH),    
                         ('grpc.max_receive_message_length', MAX_LENGTH)])
-    train_server = TrainServerServicer(model.fc, num_clients=num_clients)
+    train_server = TrainServerServicer(model.fc, num_clients=num_clients, device=device)
     get_model_server = ReturnServerModel(model.fc)
     aggregate_server = AggregateServicer(num_clients=num_clients)
 
