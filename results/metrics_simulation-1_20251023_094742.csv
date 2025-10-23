@@ -1,2 +1,0 @@
-timestamp,run_name,round,acc,precision,recall,f1,tp,tn,fp,fn,total,correct,num_clients,lr,batch_size,local_epochs,steps_per_epoch,split,device,seed
-2025-10-23T09:48:00,simulation 1,0,0.89414894,0.08465608,0.38095238,0.13852814,16,1665,173,26,1880,1681,10,0.001,8,1,94,1,cpu,42

@@ -14,8 +14,8 @@ RUNNER="fedsplit_runner.py"
 LEARNING_RATES=(1e-3 5e-4 1e-4 5e-5 1e-5 5e-6 1e-6)
 
 # Parâmetros padrão (ajuste se quiser)
-NUM_CLIENTS=10
-ROUNDS=50
+NUM_CLIENTS=53
+ROUNDS=150
 LOCAL_EPOCHS=1
 BATCH_SIZE=8
 SEED=42
