@@ -105,6 +105,7 @@ class TrainServerServicer(pb2_grpc.TrainServerServicer):
             #print(f'client {received_embedding.id} traning...')
 
             # recebe os embeddings
+            self.model = self.model.to(self.device)
             embedding_in = deserialize_embedding(received_embedding).to(self.device)
 
             # define as labels do cliente
