@@ -110,7 +110,7 @@ class Client(object):
             _, _, head_tensors = deserialize_model(head_msg)
             set_paramaters(self.head_model, head_tensors)
             # garante que o sequencial está coerente
-            self.local_model = nn.Sequential(self.base_model, self.head_model)
+            self.local_model = nn.Sequential(self.base_model, self.head_model).to(self.device)
 
         self.local_model.eval()  # propaga para base/head
 
