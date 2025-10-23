@@ -103,10 +103,11 @@ class TrainServerServicer(pb2_grpc.TrainServerServicer):
             # Processa a requisição do cliente enquanto o lock é mantido
             self.model.train()
             #print(f'client {received_embedding.id} traning...')
-
+            print("Server device:", self.device)
+            print("Model device:", next(self.model.parameters()).device)
             # recebe os embeddings
-            self.model = self.model.to(self.device)
             embedding_in = deserialize_embedding(received_embedding).to(self.device)
+            print("Embedding device:", embedding_in.device)
 
             # define as labels do cliente
             shape_embedding = list(received_embedding.shape)
