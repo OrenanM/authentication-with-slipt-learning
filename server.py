@@ -29,7 +29,10 @@ class AggregateServicer(pb2_grpc.AggregateServicer):
     def __init__(self, num_clients: int = 10, device: torch.device | None = None):
         super().__init__()
         self.num_clients = int(num_clients)
-        self.device = device or torch.device("cpu")
+        if device == None:
+            self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
 
         # o modelo global é uma lista de tensores (um por parâmetro)
         self.global_model: List[torch.Tensor] = []
@@ -83,7 +86,12 @@ class AggregateServicer(pb2_grpc.AggregateServicer):
 class TrainServerServicer(pb2_grpc.TrainServerServicer):
     def __init__(self, model, num_clients=1, learning_rate=0.00005, device=None):
         super().__init__()
-        self.device = device
+
+        if device == None:
+            self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
+
         self.num_clients = num_clients
         self.model = model.to(self.device)
 
@@ -103,11 +111,9 @@ class TrainServerServicer(pb2_grpc.TrainServerServicer):
             # Processa a requisição do cliente enquanto o lock é mantido
             self.model.train()
             #print(f'client {received_embedding.id} traning...')
-            print("Server device:", self.device)
-            print("Model device:", next(self.model.parameters()).device)
+
             # recebe os embeddings
             embedding_in = deserialize_embedding(received_embedding).to(self.device)
-            print("Embedding device:", embedding_in.device)
 
             # define as labels do cliente
             shape_embedding = list(received_embedding.shape)
@@ -132,12 +138,11 @@ def serve(split=False, num_clients=53):
     torch.manual_seed(42)
     model = FedAvgCNN(num_classes=num_clients)
     MAX_LENGTH = 50 * 1024 * 1024
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
                 options=[('grpc.max_send_message_length', MAX_LENGTH),    
                         ('grpc.max_receive_message_length', MAX_LENGTH)])
-    train_server = TrainServerServicer(model.fc, num_clients=num_clients, device=device)
+    train_server = TrainServerServicer(model.fc, num_clients=num_clients)
     get_model_server = ReturnServerModel(model.fc)
     aggregate_server = AggregateServicer(num_clients=num_clients)
 
