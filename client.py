@@ -59,7 +59,7 @@ class Client(object):
         send_models = serialize_model(self.id, int(batch_weight), model.parameters())
 
         aggregate_model = self.aggregate_stub.AggregateModels(send_models, timeout=timeout_seconds)
-        _, _, global_tensors = deserialize_model(aggregate_model)
+        _, _, global_tensors = deserialize_model(aggregate_model, device=self.device)
 
         set_paramaters(model, global_tensors)
 

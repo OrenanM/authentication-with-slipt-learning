@@ -46,7 +46,7 @@ class AggregateServicer(pb2_grpc.AggregateServicer):
     def AggregateModels(self, request, context):
         with self.lock, torch.no_grad():
             
-            client_id, weight, grads = deserialize_model(request)
+            client_id, weight, grads = deserialize_model(model=request, device=self.device)
 
             self.uploaded_ids.append(client_id)
             self.uploaded_weights.append(weight)
@@ -114,6 +114,7 @@ class TrainServerServicer(pb2_grpc.TrainServerServicer):
 
             # recebe os embeddings
             embedding_in = deserialize_embedding(received_embedding).to(self.device)
+            embedding_in.retain_grad()
 
             # define as labels do cliente
             shape_embedding = list(received_embedding.shape)
@@ -124,13 +125,13 @@ class TrainServerServicer(pb2_grpc.TrainServerServicer):
             error = self.criterion(output, labels)
             error.backward()
 
-            # "caminha" com o gradiente
-            self.optim.step()
-            self.optim.zero_grad()
-
             # envia os gradientes para o cliente
             send_grad_server = serialize_tensor(embedding_in.grad)
             grad_error = pb2.Gradients(grad=send_grad_server, shape=shape_embedding)
+
+            # "caminha" com o gradiente
+            self.optim.step()
+            self.optim.zero_grad()
 
             return grad_error
 

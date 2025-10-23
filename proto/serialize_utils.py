@@ -50,7 +50,7 @@ def serialize_model(client_id: int, weight: int, model_params) -> pb2.Models:
     return pb2.Models(id=client_id, data_sample=weight, gradients=gradients_msg)
 
 
-def deserialize_model(model: pb2.Models) -> tuple[int, int, list[torch.Tensor]]:
+def deserialize_model(model: pb2.Models, device: str ='cpu') -> tuple[int, int, list[torch.Tensor]]:
     """
     Reconstrói os tensores de parâmetros de uma mensagem pb2.Models.
 
@@ -65,7 +65,7 @@ def deserialize_model(model: pb2.Models) -> tuple[int, int, list[torch.Tensor]]:
     client_tensors = []
     for g in model.gradients:
         shape = list(g.shape)
-        t = torch.tensor(g.grad, dtype=torch.float32).view(*shape)
+        t = torch.tensor(g.grad, dtype=torch.float32, device=device).view(*shape)
         client_tensors.append(t)
 
     return client_id, weight, client_tensors
