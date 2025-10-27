@@ -38,7 +38,7 @@ TRANSFORMS = {
 # -----------------------------
 # Carregamento com janelas fixas
 # -----------------------------
-def load_data_from_csv(dataset_directory: str, size_window: int = 64, col_name: str = ' II'):
+def load_data_from_csv(dataset_directory: str, size_dataset: int, size_window: int = 64, col_name: str = ' II'):
     """
     Lê CSVs, remove NaN, corta para múltiplo de size_window e faz reshape (N_janelas, size_window).
     Extrai label do nome do arquivo via csv_file[6:8] (ajuste se necessário).
@@ -69,6 +69,18 @@ def load_data_from_csv(dataset_directory: str, size_window: int = 64, col_name: 
         except ValueError:
             label_int = 0
 
+        # Verifica se o tamanho do dataset foi especificado
+        if size_dataset is None:
+            size_dataset = windows.shape[0]
+
+        # Reduz o número de windows com base no tamanho do dataset e um fator de ajuste
+        adjustment_factor = round(125 / 64)  
+        windows = windows[:size_dataset * adjustment_factor]  
+        
+        if size_dataset is None:
+            size_dataset = windows.shape[0]
+
+        windows = windows[:size_dataset*round(125/64)]
         labels = np.full((windows.shape[0],), label_int, dtype=int)
 
         data_list.append(windows.astype(np.float32))
@@ -165,8 +177,11 @@ def save_data(
 # -----------------------------
 # Main / CLI
 # -----------------------------
-def main(dataset_directory: str, save_path: str, size_window: int = 64, col_name: str = ' II', transform: str = "none", num_clients: int = 53):
-    data_list, target_list = load_data_from_csv(dataset_directory, size_window=size_window, col_name=col_name)
+def main(dataset_directory: str, save_path: str, size_window: int = 64, size_dataset = None,
+         col_name: str = ' II', transform: str = "none", num_clients: int = 53):
+    
+    data_list, target_list = load_data_from_csv(dataset_directory, size_dataset=size_dataset,
+                                                size_window=size_window, col_name=col_name)
     save_data(
         data_list,
         target_list,
@@ -178,18 +193,20 @@ def main(dataset_directory: str, save_path: str, size_window: int = 64, col_name
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Gerar dataset por janelas com ou sem transformação (FFT).")
-    parser.add_argument("--dataset-directory", type=str, default='bidmc_csv/', help="Pasta com CSVs.")
-    parser.add_argument("--save-path", type=str, default='ECG', help="Pasta de saída (serão criadas subpastas train/ e test/).")
-    parser.add_argument("--size-window", type=int, default=64, help="Tamanho da janela (L).")
-    parser.add_argument("--col-name", type=str, default=" II", help="Nome da coluna do ECG no CSV.")
+    parser.add_argument("--dataset_directory", type=str, default='bidmc_csv/', help="Pasta com CSVs.")
+    parser.add_argument("--save_path", type=str, default='ECG', help="Pasta de saída (serão criadas subpastas train/ e test/).")
+    parser.add_argument("--size_window", type=int, default=64, help="Tamanho da janela (L).")
+    parser.add_argument("--col_name", type=str, default=" II", help="Nome da coluna do ECG no CSV.")
     parser.add_argument("--transform", type=str, choices=["none", "fft"], default="none", help="Transformação por janela.")
-    parser.add_argument("--num-clients", type=int, default=53, help="Número de clientes para particionar o teste.")
+    parser.add_argument("--num_clients", type=int, default=53, help="Número de clientes para particionar o teste.")
+    parser.add_argument("--size_dataset", type=int, default=None, help='Numero de dados de cada cliente')
     args = parser.parse_args()
 
     main(
         dataset_directory=args.dataset_directory,
         save_path=args.save_path,
         size_window=args.size_window,
+        size_dataset=args.size_dataset,
         col_name=args.col_name,
         transform=args.transform,
         num_clients=args.num_clients
