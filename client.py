@@ -35,10 +35,13 @@ class Client(object):
 
         # modelos
         self.device = device
-        self.local_model = local_model  # <-- corrigido
+        
         if self.split_train:
             self.head_model = head_model.to(self.device)
             self.base_model = base_model.to(self.device)
+        else: 
+            print('aqui')
+            self.local_model = local_model.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()
         self.optim = torch.optim.Adam(
