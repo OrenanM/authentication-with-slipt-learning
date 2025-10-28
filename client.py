@@ -40,7 +40,6 @@ class Client(object):
             self.head_model = head_model.to(self.device)
             self.base_model = base_model.to(self.device)
         else: 
-            print('aqui')
             self.local_model = local_model.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()
@@ -121,30 +120,35 @@ class Client(object):
         tp = tn = fp = fn = 0
 
         with torch.no_grad():
-
             for X, y in self.test_loader:   # <- precisa ser (X, y)
                 X, y = X.to(self.device), y.to(self.device)
 
                 logits = self.local_model(X)
+
+                # Se a saída for [N, C], usa argmax para pegar a classe com maior probabilidade
                 pred = torch.argmax(logits, dim=1)
 
-                y_bin = (y == self.id).long()
-                pred_bin = (pred == self.id).long()
+                # Acumula acertos e total
+                correct += (pred == y).sum().item()
+                total   += y.numel()
 
-                correct += torch.sum(pred == y)
-                total   += y_bin.size(0)
+                # Atualiza a matriz de confusão para métricas
+                for t, p in zip(y.view(-1), pred.view(-1)):
+                    tp += (t == p)  # Verdadeiro positivo
+                    fp += (t != p) & (p != 0)  # Falso positivo
+                    fn += (t != p) & (p == 0)  # Falso negativo
+                    tn += (t != p) & (p == 0)  # Verdadeiro negativo
 
-                tp += ((y_bin == 1) & (pred_bin == 1)).sum().item()
-                tn += ((y_bin == 0) & (pred_bin == 0)).sum().item()
-                fp += ((y_bin == 0) & (pred_bin == 1)).sum().item()
-                fn += ((y_bin == 1) & (pred_bin == 0)).sum().item()
+        # Converte para inteiros Python
+        correct_i = int(correct)
+        total_i   = int(total)
+        tp_i      = int(tp)
+        tn_i      = int(tn)
+        fp_i      = int(fp)
+        fn_i      = int(fn)
 
-                
-        # (opcional) voltar para treino se ainda for treinar depois
-        self.local_model.train()
+        return correct_i, total_i, tp_i, tn_i, fp_i, fn_i
 
-        # Retorno completo
-        return correct, total, tp, tn, fp, fn
 
 if __name__ == "__main__":
     
