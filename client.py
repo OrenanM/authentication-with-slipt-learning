@@ -129,7 +129,7 @@ class Client(object):
                 pred = torch.argmax(logits, dim=1)
 
                 # Calcular loss
-                loss = self.criterion(logits, y)
+                loss = self.criterion(y, logits)
                 total_loss += loss.item()
 
                 # Acumula acertos e total
