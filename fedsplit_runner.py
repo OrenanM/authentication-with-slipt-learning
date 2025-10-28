@@ -251,17 +251,19 @@ def run_clients(
             t.join()
 
         # ===== Avaliação agregada (micro) usando o novo evaluate() =====
-        total_tp, total_tn, total_fp, total_fn = 0, 0, 0, 0
+        total_tp, total_tn, total_fp, total_fn, total_loss = 0, 0, 0, 0, 0
         total = 0
 
         for c in clients:
-            corr, t, tp, tn, fp, fn = c.evaluate()
+            corr, t, tp, tn, fp, fn, loss = c.evaluate()
             total_tp += tp
             total_tn += tn
             total_fp += fp
             total_fn += fn
             total    += t
+            total_loss += loss
 
+        mean_loss = total_loss/total
         correct  = total_tp + total_tn
         acc      = _safe_div(correct, total)
         precision = _safe_div(total_tp, total_tp + total_fp)
@@ -272,7 +274,7 @@ def run_clients(
         print(
             f"[CLIENTS] round={rnd} | acc={acc:.4f} "
             f"prec={precision:.4f} rec={recall:.4f} f1={f1:.4f} "
-            f"tp={total_tp} tn={total_tn} fp={total_fp} fn={total_fn} total={total} "
+            f"tp={total_tp} tn={total_tn} fp={total_fp} fn={total_fn} total={total} loss={mean_loss:.6f}"
             f"run='{args.run_name or ''}'"
         )
 

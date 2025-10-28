@@ -128,6 +128,10 @@ class Client(object):
                 # Se a saída for [N, C], usa argmax para pegar a classe com maior probabilidade
                 pred = torch.argmax(logits, dim=1)
 
+                # Calcular loss
+                loss = self.loss_fn(logits, y)
+                total_loss += loss.item()
+
                 # Acumula acertos e total
                 correct += (pred == y).sum().item()
                 total   += y.numel()
@@ -147,7 +151,7 @@ class Client(object):
         fp_i      = int(fp)
         fn_i      = int(fn)
 
-        return correct_i, total_i, tp_i, tn_i, fp_i, fn_i
+        return correct_i, total_i, tp_i, tn_i, fp_i, fn_i, total_loss
 
 
 if __name__ == "__main__":
