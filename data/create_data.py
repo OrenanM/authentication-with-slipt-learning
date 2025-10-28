@@ -194,7 +194,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Gerar dataset por janelas com ou sem transformação (FFT).")
     parser.add_argument("--dataset_directory", type=str, default='bidmc_csv/', help="Pasta com CSVs.")
     parser.add_argument("--save_path", type=str, default='ECG', help="Pasta de saída (serão criadas subpastas train/ e test/).")
-    parser.add_argument("--size_window", type=int, default=64, help="Tamanho da janela (L).")
+    parser.add_argument("--size_window", type=int, default=80, help="Tamanho da janela (L).")
     parser.add_argument("--col_name", type=str, default=" II", help="Nome da coluna do ECG no CSV.")
     parser.add_argument("--transform", type=str, choices=["none", "fft"], default="none", help="Transformação por janela.")
     parser.add_argument("--num_clients", type=int, default=53, help="Número de clientes para particionar o teste.")

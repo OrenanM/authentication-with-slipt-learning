@@ -1,0 +1,2 @@
+timestamp,run_name,round,acc,precision,recall,f1,tp,tn,fp,fn,total,correct,num_clients,lr,batch_size,local_epochs,steps_per_epoch,split,device,seed
+2025-10-27T18:00:39,,0,0.96201258,0.05325444,0.05960265,0.05625000,9,7639,160,142,7950,7648,53,0.001,32,1,19,1,cuda,42
