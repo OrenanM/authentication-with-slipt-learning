@@ -123,13 +123,13 @@ class Client(object):
             for X, y in self.test_loader:   # <- precisa ser (X, y)
                 X, y = X.to(self.device), y.to(self.device)
 
-                logits = self.local_model(X)
+                output = self.local_model(X)
 
                 # Se a saída for [N, C], usa argmax para pegar a classe com maior probabilidade
-                pred = torch.argmax(logits, dim=1)
+                pred = torch.argmax(output, dim=1)
 
                 # Calcular loss
-                loss = self.criterion(y, logits)
+                loss = self.criterion(output, y.long())
                 total_loss += loss.item()
 
                 # Acumula acertos e total
