@@ -119,7 +119,7 @@ class Client(object):
         self.local_model.eval()
 
         total, correct, total_loss = 0, 0, 0.0
-        tp, fp, tn, fn = [0] * 4  # Inicializa as métricas
+        tp, fp, tn, fn = 0, 0, 0, 0  # Inicializa as métricas
 
         with torch.no_grad():
             for X, y in self.test_loader:
@@ -128,19 +128,16 @@ class Client(object):
                 output = self.local_model(X)
                 pred = torch.argmax(output, dim=1)
 
-                loss = self.criterion(output, y.long())
-                total_loss += loss.item()
-
                 correct += (pred == y).sum().item()
                 total += y.numel()
 
-                # Calculando métricas para cada classe
-                tp += ((y == pred) & (y == self.id)).sum().item()
-                fp += ((y == pred) & (y != self.id)).sum().item()
-                tn += ((y != pred) & (y != self.id)).sum().item()
-                fn += ((y != pred) & (y == self.id)).sum().item()
+                tp += ((pred == y) & (y==self.id-1)).sum().item()
+                tn += ((pred == y) & (y!=self.id-1)).sum().item() 
 
-        return correct, total, tp, tn, fp, fn, total_loss
+                fp += ((pred != y) & (y==self.id-1)).sum().item()
+                fn += ((pred != y) & (y!=self.id-1)).sum().item()  
+
+        return correct, total, tp, tn, fp, fn
 
 
 if __name__ == "__main__":

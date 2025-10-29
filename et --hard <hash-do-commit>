@@ -1,0 +1,131 @@
+[33mcommit facce0209f06da05a8f41e5137e36230c093dec5[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Wed Oct 29 09:51:14 2025 -0300
+
+    ajuste acc
+
+[33mcommit d21e41b2dc61b2b7852218859d4614cf06257380[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Wed Oct 29 09:17:46 2025 -0300
+
+    nova avaliação
+
+[33mcommit 707d0814b4dbae4a3426901ddf9a9f380f591a85[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Tue Oct 28 14:26:33 2025 -0300
+
+    ajusted loss
+
+[33mcommit 7258b5148ba5a2d80f235dd4271cf612af55628b[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Tue Oct 28 14:15:02 2025 -0300
+
+    ajust loss cross entropy
+
+[33mcommit 18366b369d90187dd5e7885c99d6bf661c8bbaf7[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Tue Oct 28 14:10:51 2025 -0300
+
+    ajust loss
+
+[33mcommit b071844724455fe0d8cb090672b7d018c7f0197a[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Tue Oct 28 14:06:54 2025 -0300
+
+    new evaluate loss
+
+[33mcommit 75a0925bf879f0cb602f18de91c1f2c96f1d9489[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Tue Oct 28 14:01:01 2025 -0300
+
+    new evaluate
+
+[33mcommit 14dbd5aa6966369d2e5d8cac9451fbb89ffe3794[m
+Author: renan <renan.smorais2001@gmail.com>
+Date:   Tue Oct 28 12:01:16 2025 -0300
+
+    ajuste tamanho dataset
+
+[33mcommit 580c42d3ccc0978ea6a7276b0be9682a08f06e1a[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Mon Oct 27 17:06:45 2025 -0300
+
+    ajuste split learning
+
+[33mcommit b73ba13a6f6764acf960b4ca65ff26c0f9bbd770[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Mon Oct 27 16:10:38 2025 -0300
+
+    ajuste separação de dados
+
+[33mcommit ad5cb98693361ebe5dca871c7dcadc01f1dc9a77[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Mon Oct 27 15:23:05 2025 -0300
+
+    variation size dataset
+
+[33mcommit ade2b26aa144508f7fcc466fcd15661bd3e00b2d[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 10:02:40 2025 -0300
+
+    simulações atualizadas
+
+[33mcommit 3266aecc212830711644b0130fac8511d2b2f949[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 09:55:29 2025 -0300
+
+    device clients
+
+[33mcommit d50728c434c7dfac0d361695b4b24cd9d4a2c0da[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 09:50:20 2025 -0300
+
+    device agregaçao
+
+[33mcommit 5d79f5e6b0519898905e15677d4e2be64e65830d[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 09:10:46 2025 -0300
+
+    correção device server
+
+[33mcommit b3be095e383eb8078ee0586a626e86c7996ae577[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 09:04:35 2025 -0300
+
+    correção device
+
+[33mcommit d18239f06e3153d62f6d9266e68cfb8e057f43b5[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 08:58:08 2025 -0300
+
+    teste device
+
+[33mcommit b621670754703c476c057e3fb66bdf14e411efa3[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 08:55:05 2025 -0300
+
+    correção device servidor
+
+[33mcommit 54de4bf59bbb47718c2dcf758a3e534a7904f05e[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 08:51:25 2025 -0300
+
+    device server
+
+[33mcommit 1522803e13125fffc622ec6d440c2e848a5a0cb9[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 08:38:18 2025 -0300
+
+    ajuste device
+
+[33mcommit 16446633f8d9a0ace412d7117602f0c45ede3ed3[m
+Author: renan <renan.smorais2001@gmail.com>
+Date:   Thu Oct 23 08:33:32 2025 -0300
+
+    add venv
+
+[33mcommit aa97bddf426174e504166e24b4ebc4082cd356c1[m
+Author: OrenanM <renan.smorais2001@gmail.com>
+Date:   Wed Oct 22 16:44:58 2025 -0300
+
+    first commit

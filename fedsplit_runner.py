@@ -266,10 +266,10 @@ def run_clients(
             corr, t, tp, tn, fp, fn, loss = c.evaluate()
 
             # Soma os valores para cada classe
-            total_tp = tp
-            total_tn = tn
-            total_fp = fp
-            total_fn = fn
+            total_tp += tp
+            total_tn += tn
+            total_fp += fp
+            total_fn += fn
 
             total += t
             total_loss += loss
@@ -277,8 +277,7 @@ def run_clients(
 
         # Métricas globais
         mean_loss = total_loss / total
-        correct = total_tp + total_tn
-        acc = _safe_div(correct, total)
+        acc = correct/total
         precision = _safe_div(total_tp, total_tp + total_fp)
         recall = _safe_div(total_tp, total_tp + total_fn)
         f1 = _safe_div(2 * precision * recall, precision + recall)
