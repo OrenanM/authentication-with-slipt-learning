@@ -259,6 +259,7 @@ def run_clients(
         total_fn = 0
         total = 0
         total_loss = 0.0
+        correct = 0
 
         # Loop pelos clientes
         for c in clients:
@@ -272,6 +273,7 @@ def run_clients(
 
             total += t
             total_loss += loss
+            correct += corr
 
         # Métricas globais
         mean_loss = total_loss / total
