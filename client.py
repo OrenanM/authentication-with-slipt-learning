@@ -13,11 +13,13 @@ import threading
 
 from utils.models import FedAvgCNN
 
+from sklearn.metrics import confusion_matrix
+
 
 class Client(object):
     def __init__(self, id, local_model=None, head_model=None, base_model=None,
                  device='cpu', batch_size=8, learning_rate=0.00005, local_epochs=1,
-                 split_train=True, barrier=None, steps_per_epoch=None):
+                 split_train=True, barrier=None, steps_per_epoch=None, num_classes=53):
         self.id = id
         self.host = 'localhost'
         self.server_port = 50051
@@ -52,6 +54,8 @@ class Client(object):
         self.train_loader, self.test_loader = load_data(self.id, batch_size=batch_size)
         self.barrier = barrier
         self.steps_per_epoch = steps_per_epoch  # pode ser None
+
+        self.num_classes = num_classes
 
     def aggregate(self, batch_weight, timeout_seconds: float = 300.0):
         # escolhe qual modelo enviar
@@ -106,52 +110,37 @@ class Client(object):
                     return
 
     def evaluate(self):
-        # Se estiver em split learning, puxa a cabeça atual do servidor
         if self.split_train:
             head_msg = self.get_head_model.GetServerModel(pb2.Empty())
             _, _, head_tensors = deserialize_model(head_msg)
             set_paramaters(self.head_model, head_tensors)
-            # garante que o sequencial está coerente
             self.local_model = nn.Sequential(self.base_model, self.head_model).to(self.device)
 
-        self.local_model.eval()  # propaga para base/head
+        self.local_model.eval()
 
         total, correct, total_loss = 0, 0, 0.0
-        tp = tn = fp = fn = 0
+        tp, fp, tn, fn = [0] * 4  # Inicializa as métricas
 
         with torch.no_grad():
-            for X, y in self.test_loader:   # <- precisa ser (X, y)
+            for X, y in self.test_loader:
                 X, y = X.to(self.device), y.to(self.device)
 
                 output = self.local_model(X)
-
-                # Se a saída for [N, C], usa argmax para pegar a classe com maior probabilidade
                 pred = torch.argmax(output, dim=1)
 
-                # Calcular loss
                 loss = self.criterion(output, y.long())
                 total_loss += loss.item()
 
-                # Acumula acertos e total
                 correct += (pred == y).sum().item()
-                total   += y.numel()
+                total += y.numel()
 
-                # Atualiza a matriz de confusão para métricas
-                for t, p in zip(y.view(-1), pred.view(-1)):
-                    tp += (t == p)  # Verdadeiro positivo
-                    fp += (t != p) & (p != 0)  # Falso positivo
-                    fn += (t != p) & (p == 0)  # Falso negativo
-                    tn += (t != p) & (p == 0)  # Verdadeiro negativo
+                # Calculando métricas para cada classe
+                tp += ((y == pred) & (y == self.id)).sum().item()
+                fp += ((y == pred) & (y != self.id)).sum().item()
+                tn += ((y != pred) & (y != self.id)).sum().item()
+                fn += ((y != pred) & (y == self.id)).sum().item()
 
-        # Converte para inteiros Python
-        correct_i = int(correct)
-        total_i   = int(total)
-        tp_i      = int(tp)
-        tn_i      = int(tn)
-        fp_i      = int(fp)
-        fn_i      = int(fn)
-
-        return correct_i, total_i, tp_i, tn_i, fp_i, fn_i, total_loss
+        return correct, total, tp, tn, fp, fn, total_loss
 
 
 if __name__ == "__main__":
@@ -175,7 +164,8 @@ if __name__ == "__main__":
             base_model=model.conv,          # usado quando split_train=True
             device=device,
             barrier=barrier,
-            split_train=False                # ou False, conforme seu caso
+            split_train=False,                # ou False, conforme seu caso
+            num_classes=num_clients
         )
         clients.append(client)
 

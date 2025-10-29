@@ -171,6 +171,7 @@ def run_server(head_model: torch.nn.Module | None, args: argparse.Namespace) -> 
 # ===========================
 
 def run_clients(
+    num_clients: int,
     init_full_model: torch.nn.Module | None,
     init_base: torch.nn.Module | None,
     init_head: torch.nn.Module | None,
@@ -219,6 +220,7 @@ def run_clients(
             batch_size=args.batch_size,
             learning_rate=args.lr,
             local_epochs=args.local_epochs,
+            num_classes=num_clients
         )
         clients.append(client)
 
@@ -250,25 +252,34 @@ def run_clients(
         for t in threads:
             t.join()
 
-        # ===== Avaliação agregada (micro) usando o novo evaluate() =====
-        total_tp, total_tn, total_fp, total_fn, total_loss = 0, 0, 0, 0, 0
+        # Inicializa variáveis globais
+        total_tp = 0
+        total_tn = 0
+        total_fp = 0
+        total_fn = 0
         total = 0
+        total_loss = 0.0
 
+        # Loop pelos clientes
         for c in clients:
             corr, t, tp, tn, fp, fn, loss = c.evaluate()
-            total_tp += tp
-            total_tn += tn
-            total_fp += fp
-            total_fn += fn
-            total    += t
+
+            # Soma os valores para cada classe
+            total_tp = tp
+            total_tn = tn
+            total_fp = fp
+            total_fn = fn
+
+            total += t
             total_loss += loss
 
-        mean_loss = total_loss/total
-        correct  = total_tp + total_tn
-        acc      = _safe_div(correct, total)
+        # Métricas globais
+        mean_loss = total_loss / total
+        correct = total_tp + total_tn
+        acc = _safe_div(correct, total)
         precision = _safe_div(total_tp, total_tp + total_fp)
-        recall    = _safe_div(total_tp, total_tp + total_fn)
-        f1        = _safe_div(2 * precision * recall, precision + recall)
+        recall = _safe_div(total_tp, total_tp + total_fn)
+        f1 = _safe_div(2 * precision * recall, precision + recall)
 
         # Log amigável no console
         print(
@@ -297,6 +308,10 @@ def run_clients(
         )
 
 
+def _safe_div(a, b):
+    return a / b if b != 0 else 0
+
+
 # ===========================
 # Execução combinada (ALL)
 # ===========================
@@ -321,9 +336,9 @@ def run_all(args: argparse.Namespace) -> None:
 
     # Executa clientes com deepcopies da mesma inicialização
     if args.split:
-        run_clients(None, init_base, init_head, args)
+        run_clients(args.num_clients, None, init_base, init_head, args)
     else:
-        run_clients(init_model, None, None, args)
+        run_clients(args.num_clients, init_model, None, None, args)
 
 
 # ===========================
@@ -435,9 +450,9 @@ def main() -> None:
         torch.manual_seed(args.seed)
         init_model = FedAvgCNN(num_classes=args.num_clients + 1)
         if args.split:
-            run_clients(None, copy.deepcopy(init_model.conv), copy.deepcopy(init_model.fc), args)
+            run_clients(args.num_clients, None, copy.deepcopy(init_model.conv), copy.deepcopy(init_model.fc), args)
         else:
-            run_clients(init_model, None, None, args)
+            run_clients(args.num_clients, init_model, None, None, args)
 
     else:
         # Modo combinado (sobe servidor e roda clientes)
