@@ -258,12 +258,11 @@ def run_clients(
         total_fp = 0
         total_fn = 0
         total = 0
-        total_loss = 0.0
         correct = 0
 
         # Loop pelos clientes
         for c in clients:
-            corr, t, tp, tn, fp, fn, loss = c.evaluate()
+            corr, t, tp, tn, fp, fn = c.evaluate()
 
             # Soma os valores para cada classe
             total_tp += tp
@@ -272,11 +271,9 @@ def run_clients(
             total_fn += fn
 
             total += t
-            total_loss += loss
             correct += corr
 
-        # Métricas globais
-        mean_loss = total_loss / total
+
         acc = correct/total
         precision = _safe_div(total_tp, total_tp + total_fp)
         recall = _safe_div(total_tp, total_tp + total_fn)
@@ -286,7 +283,7 @@ def run_clients(
         print(
             f"[CLIENTS] round={rnd} | acc={acc:.4f} "
             f"prec={precision:.4f} rec={recall:.4f} f1={f1:.4f} "
-            f"tp={total_tp} tn={total_tn} fp={total_fp} fn={total_fn} total={total} loss={mean_loss:.6f}"
+            f"tp={total_tp} tn={total_tn} fp={total_fp} fn={total_fn} total={total} "
             f"run='{args.run_name or ''}'"
         )
 
