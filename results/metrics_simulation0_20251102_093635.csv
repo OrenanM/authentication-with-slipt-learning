@@ -1,0 +1,4 @@
+timestamp,run_name,round,acc,precision,recall,f1,tp,tn,fp,fn,total,correct,num_clients,lr,batch_size,local_epochs,steps_per_epoch,split,device,seed
+2025-11-02T09:37:01,simulation0,0,0.29354839,0.03755869,0.36363636,0.06808511,8,83,205,14,310,91,10,1e-05,8,2,75,1,cpu,42
+2025-11-02T09:37:28,simulation0,1,0.39677419,0.04419890,0.36363636,0.07881773,8,115,173,14,310,123,10,1e-05,8,2,75,1,cpu,42
+2025-11-02T09:37:55,simulation0,2,0.47419355,0.07272727,0.54545455,0.12834225,12,135,153,10,310,147,10,1e-05,8,2,75,1,cpu,42

@@ -46,7 +46,8 @@ class Client(object):
 
         self.criterion = nn.CrossEntropyLoss()
         self.optim = torch.optim.Adam(
-            (self.base_model if self.split_train else self.local_model).parameters()
+            (self.base_model if self.split_train else self.local_model).parameters(),
+            lr=learning_rate
         )
         self.local_epochs = local_epochs
 
@@ -135,7 +136,7 @@ class Client(object):
 
                 fn += ((pred != y) & (y==self.id-1)).sum().item()
                 fp += ((pred != y) & (y!=self.id-1)).sum().item()  
-                
+
         return correct, total, tp, tn, fp, fn
 
 
