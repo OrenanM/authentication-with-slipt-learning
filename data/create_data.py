@@ -47,7 +47,7 @@ def load_data_from_csv(dataset_directory: str, size_window: int = 64, col_name: 
     csv_files = sorted(os.listdir(dataset_directory))
     data_list, target_list = [], []
 
-    for csv_file in csv_files:
+    for n, csv_file in enumerate(csv_files):
         if not csv_file.lower().endswith('.csv'):
             continue
         full_path = os.path.join(dataset_directory, csv_file)
@@ -73,6 +73,8 @@ def load_data_from_csv(dataset_directory: str, size_window: int = 64, col_name: 
 
         data_list.append(windows.astype(np.float32))
         target_list.append(labels)
+        if n >= 10:
+            break
 
     if not data_list:
         raise RuntimeError("Nenhum CSV válido encontrado ou séries curtas demais.")
