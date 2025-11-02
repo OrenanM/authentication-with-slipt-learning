@@ -46,8 +46,7 @@ class Client(object):
 
         self.criterion = nn.CrossEntropyLoss()
         self.optim = torch.optim.Adam(
-            (self.base_model if self.split_train else self.local_model).parameters(),
-            lr=learning_rate
+            (self.base_model if self.split_train else self.local_model).parameters()
         )
         self.local_epochs = local_epochs
 

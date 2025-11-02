@@ -18,9 +18,11 @@ class FedAvgCNN(nn.Module):
              
         # fully connected layers
         self.fc = nn.Sequential(
-            nn.Linear(1280, 512),
+            nn.Linear(1280, 120),
             nn.ReLU(inplace=True),
-            nn.Linear(512, num_classes)
+            nn.Linear(120, 84),
+            nn.ReLU(inplace=True),
+            nn.Linear(84, num_classes)
         )
 
     def forward(self, x):
