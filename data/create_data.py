@@ -73,7 +73,7 @@ def load_data_from_csv(dataset_directory: str, size_window: int = 64, col_name: 
 
         data_list.append(windows.astype(np.float32))
         target_list.append(labels)
-        if n >= 10:
+        if n >= 9:
             break
 
     if not data_list:
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     parser.add_argument("--size_window", type=int, default=80, help="Tamanho da janela (L).")
     parser.add_argument("--col_name", type=str, default=" II", help="Nome da coluna do ECG no CSV.")
     parser.add_argument("--transform", type=str, choices=["none", "fft"], default="none", help="Transformação por janela.")
-    parser.add_argument("--num_clients", type=int, default=53, help="Número de clientes para particionar o teste.")
+    parser.add_argument("--num_clients", type=int, default=10, help="Número de clientes para particionar o teste.")
     parser.add_argument("--size_dataset", type=int, default=None, help='Numero de dados de cada cliente')
     args = parser.parse_args()
 
