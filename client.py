@@ -133,9 +133,9 @@ class Client(object):
                 tp += ((pred == y) & (y==self.id-1)).sum().item()
                 tn += ((pred == y) & (y!=self.id-1)).sum().item() 
 
-                fp += ((pred != y) & (y==self.id-1)).sum().item()
-                fn += ((pred != y) & (y!=self.id-1)).sum().item()  
-
+                fn += ((pred != y) & (y==self.id-1)).sum().item()
+                fp += ((pred != y) & (y!=self.id-1)).sum().item()  
+                
         return correct, total, tp, tn, fp, fn
 
 
